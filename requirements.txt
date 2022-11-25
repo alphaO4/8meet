@@ -1,3 +1,5 @@
 requests
 ytmusicapi
 youtube-dl
+lyricsgenius
+pymongo
