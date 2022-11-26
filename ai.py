@@ -4,7 +4,7 @@ import urllib.request
 import os
 import json
 
-openai.api_key = "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"
+openai.api_key = open("./dalle-key.txt").read()
 images = []
 
 def generateImage(i):
