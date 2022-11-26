@@ -49,4 +49,3 @@ def main(song):
     lyrics = lyrics.split('\n')
     return lyrics
 
-main("Yesterday")
