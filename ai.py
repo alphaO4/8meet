@@ -46,18 +46,19 @@ images = []
 imagetimes = []
 chars = 0
 videolength = 0
+basesong = ""
 
 def generateImage(i):
-    response = openai.Image.create(
-        prompt=i,
-        n=1,
-        size="256x256",
-    )
-    image_url = response['data'][0]['url']
-    print("Generated Image for", i + ":", image_url)
-    urllib.request.urlretrieve(image_url, "images/" + str(len(images)) + ".png")
+    #response = openai.Image.create(
+    #    prompt=i,
+    #    n=1,
+    #    size="256x256",
+    #)
+    #image_url = response['data'][0]['url']
+    #print("Generated Image for", i + ":", image_url)
+    #urllib.request.urlretrieve(image_url, "images/" + str(len(images)) + ".png")
     images.append(i)
-    imagetimes.append(len(i)/chars)
+    imagetimes.append(len(i)/chars*videolength)
 
 
 try:
@@ -75,6 +76,7 @@ for i in main(basesong):
     if(len(i)):
         generateImage(i)
 
+print(imagetimes)
 
 open("./images/images.json", "w").write(json.dumps({"images": images}))
 
