@@ -26,6 +26,7 @@ try:
     os.mkdir("./images")
 except Exception:
     None
+
 for i in main(input("Enter Song: ")):
     if(len(i)):
         generateImage(i)

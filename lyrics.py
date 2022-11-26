@@ -17,7 +17,7 @@ def get_song_id(song):
 def check_if_lyrics_exist(song):
     #make a Database request and check if the lyrics exist
     #if they do, return the lyrics
-    #if they don't, call get_lyrics and return the lyrics
+    #if they don't, call get_lyrics, save the lyrics in the DB and return the lyrics
     mycol = mydb["lyrics"]
     name = ytmusic.get_song(videoId=get_song_id(song))['videoDetails']['title']
     query = mycol.find({'title':name.lower()})
