@@ -1,14 +1,51 @@
+from __future__ import unicode_literals
+
 import openai
 from lyrics import main
 import urllib.request
 import os
 import json
 import moviepy.video.io.ImageSequenceClip as movieclip
+import moviepy.editor
 import random
+from mutagen.mp3 import MP3
+
+
+from ytmusicapi import YTMusic
+import youtube_dl
+
+ytmusic = YTMusic("headers_auth.json")
+
+
+def get_song_id(song):
+    songid = ytmusic.search(query=song, filter="songs", limit=1)
+    songid = songid[0]["videoId"]
+    return songid
+
+def makeMP3(songname):
+    ydl_opts = {
+        "format": "bestaudio/best",
+        "postprocessors": [
+            {
+                "key": "FFmpegExtractAudio",
+                "preferredcodec": "mp3",
+                "preferredquality": "192"
+            }
+        ],
+    }
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        ydl.download(
+            ["http://www.youtube.com/watch?v=" + get_song_id(songname)]
+        )
+
+
+
 
 openai.api_key = open("./dalle-key.txt").read()
 images = []
 imagetimes = []
+chars = 0
+videolength = 0
 
 def generateImage(i):
     response = openai.Image.create(
@@ -20,15 +57,24 @@ def generateImage(i):
     print("Generated Image for", i + ":", image_url)
     urllib.request.urlretrieve(image_url, "images/" + str(len(images)) + ".png")
     images.append(i)
-    imagetimes.append(random.random() * 15)
+    imagetimes.append(len(i)/chars)
+
 
 try:
     os.mkdir("./images")
 except Exception:
     None
-for i in main(input("Enter Song: ")):
+basesong = input("Enter Song: ")
+for i in main(basesong):
+    chars += len(i)
+#makeMP3(basesong)
+audio = MP3("song.mp3")
+videolength = audio.info.length
+
+for i in main(basesong):
     if(len(i)):
         generateImage(i)
+
 
 open("./images/images.json", "w").write(json.dumps({"images": images}))
 
@@ -48,5 +94,8 @@ while(len(imagetimes)):
         del images[0]
         processed += 1
 print("got all frames")
-movieclip.ImageSequenceClip(imagefiles, 1).write_videofile("video.mp4")
+movieclip.ImageSequenceClip(imagefiles, 1).write_videofile("videoscreen.mp4")
+videoscreen = moviepy.editor.VideoFileClip("videoscreen.mp4")
+video = videoscreen.set_audio(moviepy.editor.AudioFileClip("song.mp3"))
+video.write_videofile("video.mp4")
 print("done")
