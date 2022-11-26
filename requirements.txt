@@ -1,0 +1,6 @@
+requests
+ytmusicapi
+youtube-dl
+pymongo
+python-dotenv
+#pytube
