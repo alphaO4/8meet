@@ -19,15 +19,15 @@ def check_if_lyrics_exist(song):
     #if they do, return the lyrics
     #if they don't, call get_lyrics and return the lyrics
     mycol = mydb["lyrics"]
-    query = mycol.find({'title':song.lower()})
+    name = ytmusic.get_song(videoId=get_song_id(song))['videoDetails']['title']
+    query = mycol.find({'title':name.lower()})
     for x in query:
-        print("Lyrics found in database")
         if (len(x['title']) > 0):
             return(x['data'])
         
-    print("Lyrics not found in Database")
     lyrics = get_lyrics(song)
-    mydict = { "title": song.lower(), "data": lyrics['lyrics'] }
+    #get the song name from ytmusic
+    mydict = { "title": name.lower(), "data": lyrics['lyrics'] }
     mycol.insert_one(mydict)
     return lyrics
 
@@ -44,8 +44,12 @@ def get_lyrics(song):
 def main(song):
     song_lower = song.lower()
     lyrics = check_if_lyrics_exist(song_lower)
-    #lyrics = lyrics['lyrics'].replace("*\r*", "")
-    #print(lyrics)
-    lyrics = lyrics.split('\n')
+    if type(lyrics) is dict():
+        lyrics = lyrics['lyrics'].split('\n')
+    else:
+        lyrics = lyrics.split('\n')
+    print(lyrics)
     return lyrics
 
+if __name__ == "__main__":
+    main(input("Enter a song: "))
