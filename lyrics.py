@@ -44,11 +44,10 @@ def get_lyrics(song):
 def main(song):
     song_lower = song.lower()
     lyrics = check_if_lyrics_exist(song_lower)
-    if type(lyrics) is dict():
+    if type(lyrics) is dict:
         lyrics = lyrics['lyrics'].split('\n')
     else:
         lyrics = lyrics.split('\n')
-    print(lyrics)
     return lyrics
 
 if __name__ == "__main__":
