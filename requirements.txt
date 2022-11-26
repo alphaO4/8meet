@@ -2,4 +2,5 @@ requests
 ytmusicapi
 youtube-dl
 pymongo
-dotenv
+python-dotenv
+#pytube

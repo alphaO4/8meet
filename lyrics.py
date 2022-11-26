@@ -21,11 +21,15 @@ def check_if_lyrics_exist(song):
     mycol = mydb["lyrics"]
     query = mycol.find({'title':song.lower()})
     for x in query:
+        print("Lyrics found in database")
         if (len(x['title']) > 0):
             return(x['data'])
-    
-    #print("Lyrics not found Song: " + song)
-    return get_lyrics(song)
+        
+    print("Lyrics not found in Database")
+    lyrics = get_lyrics(song)
+    mydict = { "title": song.lower(), "data": lyrics['lyrics'] }
+    mycol.insert_one(mydict)
+    return lyrics
 
 # Get the lyrics from the API
 def get_lyrics(song):
@@ -37,18 +41,12 @@ def get_lyrics(song):
     #print(lyrics)
     return lyrics
 
-def testing():
-    song = input("Enter the song: ")
-    lyrics = check_if_lyrics_exist(song)
-    verses = lyrics['lyrics'].split('\n')
-    print(verses)
 def main(song):
     song_lower = song.lower()
     lyrics = check_if_lyrics_exist(song_lower)
-    if "*\r*" in lyrics:
-        print("removing \\r")
-        lyrics = lyrics.replace("*\r*", "")
-    lyrics = lyrics['lyrics'].split('\n')
-    print(lyrics)
+    #lyrics = lyrics['lyrics'].replace("*\r*", "")
+    #print(lyrics)
+    lyrics = lyrics.split('\n')
+    return lyrics
 
 main("Yesterday")
