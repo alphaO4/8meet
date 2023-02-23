@@ -3,4 +3,7 @@ ytmusicapi
 youtube-dl
 pymongo
 python-dotenv
-#pytube
+openai-whisper
+
+#Only needed sometimes:
+setuptools-rust
